@@ -1,9 +1,14 @@
 var questionArea = document.querySelector("#question-area");
 var homeScreen = document.querySelector("#home");
 var timer = document.querySelector("#timer");
-var secondsLeft = 75;
+var secondsLeft = 50;
 var startBtn = document.querySelector("#startBtn");
 var askQuestion = document.querySelector("#question-text");
+//added buttons to the html because populating preexisting ones was easier than creating and deleting them each time a new question appeared
+var a1 = document.querySelector("#answer1");
+var a2 = document.querySelector("#answer2");
+var a3 = document.querySelector("#answer3");
+var a4 = document.querySelector("#answer4");
 var listEl = document.createElement("ul");
 
 //question array to call on later when generating the questions
@@ -43,35 +48,51 @@ function setTime() {
     secondsLeft--;
     timer.textContent = "Time Remaining: " + secondsLeft;
 
-    //when timer reaches zero, it stops counting down. quiz will not end, but score will be zero
+    //when timer reaches zero, it stops counting down,  and moves to highscore.html
     if (secondsLeft === 0) {
       clearInterval(timerInterval);
+      localStorage.setItem("Score", secondsLeft);
+      window.location.href = "highscore.html";
     }
   }, 1000);
 }
+
+//populates buttons with info grabbed from questions
 function displayQuestion() {
-  setTime();
-  questionArea.style.display === "block";
-  homeScreen.textContent = "";
+  questionArea.style.display = "block";
+  homeScreen.style.display = "none";
   askQuestion.textContent = questions[currentQuestionIndex].question;
-  for (i = 0; i < 4; i++) {
-    listEl = document.createElement("button");
-    listEl.innerHTML = questions[currentQuestionIndex].choices[i];
-    listEl.setAttribute("id", i);
-    questionArea.appendChild(listEl);
-  }
+
+  a1.innerHTML = questions[currentQuestionIndex].choices[0];
+  a2.innerHTML = questions[currentQuestionIndex].choices[1];
+  a3.innerHTML = questions[currentQuestionIndex].choices[2];
+  a4.innerHTML = questions[currentQuestionIndex].choices[3];
 }
 
-listEl.addEventListener("click", nextQuestion);
-
-function nextQuestion(event) {
-  event.preventDefault();
-  if (event.target.matches("button")) {
-    if (parseInt(event.target.id) === questions[currentQuestionIndex].answerIndex) {
-      alert("wow");
-    }
+//function to move on to the next question
+function nextQuestion(answer) {
+  //checks if answer is right. If not, subtract 10 seconds
+  if (answer != questions[currentQuestionIndex].answerIndex) {
+    secondsLeft -= 10;
   }
-
+  //increases currentQuestionIndex by one which will produce next question
   currentQuestionIndex++;
+  if (currentQuestionIndex > 4) {
+    localStorage.setItem("Score", secondsLeft);
+    window.location.href = "highscore.html";
+  }
+  displayQuestion();
 }
+
+//starts timer and brings buttons into view
+function displayButtons() {
+  setTime();
+  a1.style.display = "block";
+  a2.style.display = "block";
+  a3.style.display = "block";
+  a4.style.display = "block";
+}
+
+//calls both functions
 startBtn.addEventListener("click", displayQuestion);
+startBtn.addEventListener("click", displayButtons);
