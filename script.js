@@ -1,7 +1,7 @@
 var questionArea = document.querySelector("#question-area");
 var homeScreen = document.querySelector("#home");
 var timer = document.querySelector("#timer");
-var secondsLeft = 50;
+var secondsLeft = 75;
 var startBtn = document.querySelector("#startBtn");
 var askQuestion = document.querySelector("#question-text");
 //added buttons to the html because populating preexisting ones was easier than creating and deleting them each time a new question appeared
@@ -10,6 +10,8 @@ var a2 = document.querySelector("#answer2");
 var a3 = document.querySelector("#answer3");
 var a4 = document.querySelector("#answer4");
 var listEl = document.createElement("ul");
+//vars for the score submission form
+var formHolder = document.querySelector("#form-holder");
 
 //question array to call on later when generating the questions
 var questions = [
@@ -37,7 +39,7 @@ var questions = [
     question:
       "A very useful tool  used during development and debugging for printing content to the debugger is:",
     choices: ["A. JavaScript", "B. Terminal/Bash", "C. For Loops", "D. Console Log"],
-    answerIndex: 4,
+    answerIndex: 3,
   },
 ];
 
@@ -49,7 +51,7 @@ function setTime() {
     timer.textContent = "Time Remaining: " + secondsLeft;
 
     //when timer reaches zero, it stops counting down,  and moves to highscore.html
-    if (secondsLeft === 0) {
+    if (secondsLeft <= 0) {
       clearInterval(timerInterval);
       localStorage.setItem("Score", secondsLeft);
       window.location.href = "highscore.html";
